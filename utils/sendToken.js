@@ -3,10 +3,13 @@ const jwt = require("jsonwebtoken");
 const sendToken = (user, statusCode, res, next) => {
   try {
     const accessTokenExpires = parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN);
+    // console.log(accessTokenExpires, "accessToken")
     const refreshTokenExpires = parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN);
+    // console.log(refreshTokenExpires, "refreshToken")
     const payload = {
       email: user.email,
     };
+    // console.log(payload)
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: `${accessTokenExpires}m`,
     });
@@ -16,8 +19,8 @@ const sendToken = (user, statusCode, res, next) => {
     });
 
     const accessTokenCookieOptions = {
-      expires: new Date(Date.now() + accessTokenExpires * 60 * 60 * 1000),
-      maxAge: accessTokenExpires * 60 * 60 * 1000,
+      expires: new Date(Date.now() + accessTokenExpires  * 60 * 1000),
+      maxAge: accessTokenExpires  * 60 * 1000,
       httpOnly: true,
       sameSite: "none",
       secure: true,
@@ -32,6 +35,9 @@ const sendToken = (user, statusCode, res, next) => {
 
     res.cookie("accessToken", accessToken, accessTokenCookieOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+
+
+   
     res.status(statusCode).send({ success: true, user, accessToken});
   } catch (error) {
     next(error);

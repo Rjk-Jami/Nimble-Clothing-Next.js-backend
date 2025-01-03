@@ -2,8 +2,9 @@ const { UserModel } = require("../model/UsersModel");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendmail");
 const sendToken = require("../utils/sendToken");
+
 const register = async (req, res, next) => {
-  const {email} = req.body;
+  const {emailForRegister : email} = req.body;
   console.log(email);
 
   if (!email) {
@@ -34,14 +35,14 @@ const register = async (req, res, next) => {
         <p><a href="${resetLink}">${resetLink}</a></p>
         <p>If you did not request this, you can safely ignore this email.</p>`
 
-    await sendMail(email, "Set Your Password", body);
+    // await sendMail(email, "Set Your Password", body);
 
     const payload = {
       email,
       
     };
+
     sendToken(payload,200,res, next )
-    
     
 
   } catch (error) {
