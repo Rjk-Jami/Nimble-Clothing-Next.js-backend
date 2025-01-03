@@ -25,7 +25,7 @@ const register = async (req, res, next) => {
     const token = jwt.sign({email}, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log(token)
+    // console.log(token)
     
     const resetLink = `http://localhost:3000/reset-password/${token}`;
     
@@ -35,8 +35,9 @@ const register = async (req, res, next) => {
         <p>If you did not request this, you can safely ignore this email.</p>`
 
     await sendMail(email, "Set Your Password", body);
+
     const payload = {
-      email: email,
+      email,
       
     };
     sendToken(payload,200,res, next )
