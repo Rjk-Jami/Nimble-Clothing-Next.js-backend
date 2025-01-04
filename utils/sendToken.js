@@ -10,11 +10,11 @@ const sendToken = (user, statusCode, res, next) => {
       email: user.email,
     };
     // console.log(payload)
-    const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET_ACCESS, {
       expiresIn: `${accessTokenExpires}m`,
     });
 
-    const refreshToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_REFRESH, {
       expiresIn: `${refreshTokenExpires}d`,
     });
 

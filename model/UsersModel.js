@@ -10,6 +10,10 @@ const usersSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    passwordTokenUsed: {
+        type: Boolean,
+        default: false
+    },
     password: {
         type: String,
         
