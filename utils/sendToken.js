@@ -7,7 +7,7 @@ const sendToken = (user, statusCode, res, next) => {
     const refreshTokenExpires = parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN);
     // console.log(refreshTokenExpires, "refreshToken")
     const payload = {
-      email: user.email,
+      _id: user._id,
     };
     // console.log(payload)
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET_ACCESS, {
