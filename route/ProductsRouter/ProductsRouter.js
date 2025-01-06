@@ -1,5 +1,6 @@
 const express = require('express');
 const { uploadProduct, viewAllProduct, viewProductById } = require('../../controller/ProductsColtroller');
+const { compareProducts } = require('../../components/CompareProducts/CompareProducts');
 
 const router = express.Router();
 
@@ -11,6 +12,8 @@ const router = express.Router();
 router.post('/create', uploadProduct);
 router.get('/', viewAllProduct);
 router.get('/:id', viewProductById);
+router.post('/compare/selectedProduct', compareProducts)
+router.post('/wishList/selectedProduct', compareProducts)
 
 // router.get('/:id', (req, res) => {
 //     res.send(`Get product with ID ${req.params.id}`);
