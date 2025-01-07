@@ -1,18 +1,17 @@
-const { redis } = require("../../Database/ConnectRedis");
-const jwt = require("jsonwebtoken")
-const refreshToken = async (req, res) => {
+
+const sendToken = require("../../utils/sendToken");
+const refreshToken = async (req, res, next) => {
   try {
-    const token = req.cookies.refreshToken
-    console.log( token, "refreshLog");
-    const decode = jwt.verify(token, process.env.JWT_SECRET_REFRESH)
-    if (!decode) throw error("invalid token", 400);
-    // console.log(decode._id)
-    const validUser = await redis.get(`"${decode._id}"`);
-    if (!validUser)
-        return res
-          .status(400)
-          .send({ success: false, message: "could not refresh token" });
-    console.log(validUser, "validUser")
+   const validUser = req.user
+    // console.log(validUser, "refreshToken")
+    const payload = {
+      _id: validUser?._id,
+      email: validUser?.email,
+      name: validUser?.name,
+      avatar: validUser?.avatar,
+    };
+    // console.log(payload, "payload refreshToken ")
+     sendToken(payload, 200, res, next);
   } catch (error) {
 
   }

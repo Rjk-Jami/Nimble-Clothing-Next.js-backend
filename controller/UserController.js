@@ -154,6 +154,7 @@ const login = async (req, res, next) => {
       name: existingUser?.name,
       avatar: existingUser?.avatar,
     };
+    await redis.set(payload._id, JSON.stringify(payload));
     sendToken(payload, 200, res, next);
   } catch (error) {}
 };

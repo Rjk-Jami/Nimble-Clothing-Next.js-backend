@@ -9,6 +9,7 @@ const sendToken = (user, statusCode, res, next) => {
     const payload = {
       _id: user._id,
     };
+    // console.log("jami")
     // console.log(payload)
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET_ACCESS, {
       expiresIn: `${accessTokenExpires}m`,
@@ -39,6 +40,7 @@ const sendToken = (user, statusCode, res, next) => {
 
    
     res.status(statusCode).send({ success: true, user, accessToken});
+
   } catch (error) {
     next(error);
   }
