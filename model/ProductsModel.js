@@ -58,6 +58,10 @@ const productSchema = new mongoose.Schema({
   purchased: Number,
 
   reviews: [reviewSchema],
+  stripePriceId: {
+    type: String, 
+    required: false, 
+  },
 });
 
 const ProductsModal = mongoose.model("Product", productSchema);

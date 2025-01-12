@@ -90,11 +90,11 @@ const resetPassword = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // if (user.passwordTokenUsed) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Token already used" });
-    // }
+    if (user.passwordTokenUsed) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Token already used" });
+    } 
 
     const hashedPassword = await bcrypt.hash(resetPassword, 15);
     console.log(hashedPassword, "hashedPassword");
