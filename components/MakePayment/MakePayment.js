@@ -14,7 +14,7 @@ const amount = Math.floor(totalPayment * bdtToUsd * 100)
       payment_method_types: ["card"],
     });
     console.log(paymentIntent.client_secret, "paymentIntent")
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, clientSecret:paymentIntent.client_secret  });
   } catch (error) {
     console.error("Error creating payment intent:", error);
     res
