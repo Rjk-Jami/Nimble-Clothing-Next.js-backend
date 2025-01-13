@@ -9,7 +9,7 @@ const PaymentRouter = require("./PaymentRouter/PaymentRouter")
 
 router.use("/products", ProductsRouter )
 router.use("/users", UserRouter )
-router.use("/payment", PaymentRouter)
+router.use("/payments", PaymentRouter)
 
 
 module.exports = router
