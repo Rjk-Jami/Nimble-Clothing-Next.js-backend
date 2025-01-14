@@ -145,7 +145,7 @@ const login = async (req, res, next) => {
     console.log(isPasswordCorrect, "isPasswordCorrect");
     if (!isPasswordCorrect) {
       return res
-        .status(400)
+        .status(401)
         .send({ success: false, message: "Invalid password!" });
     }
     const payload = {

@@ -74,7 +74,7 @@ const Purchase = async (req, res) => {
         selectedSize.quantity = 0
       }
       console.log(existingProduct, "existingProduct")
-      await existingProduct.save()
+      // await existingProduct.save()
 
     }
     return res.status(200).send({
