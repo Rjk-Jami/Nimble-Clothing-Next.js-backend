@@ -32,7 +32,7 @@ const Purchase = async (req, res) => {
     const { paymentDetails } = req.body;
 
     // Log for debugging
-    console.log("Payment Details Received:", paymentDetails);
+    // console.log("Payment Details Received:", paymentDetails);
 
     if (
       !paymentDetails ||
@@ -48,6 +48,35 @@ const Purchase = async (req, res) => {
 
     const payment = await PaymentModel.create(paymentDetails);
 
+    console.log(payment, "payment");
+
+    //  payment?.product?.map((paymentProduct)=>{
+    //   console.log(paymentProduct,"paymentProduct.product" )
+    //   const existingProduct = await ProductsModal.findById(paymentProduct._id)
+    //  })
+
+    for (const paymentProduct of payment?.product || []) {
+      // console.log(paymentProduct,"paymentProduct.product" )
+      let existingProduct = await ProductsModal.findById(paymentProduct?._id);
+      // console.log(existingProduct.sizes, "existingProduct")
+      const selectedSize = existingProduct.sizes.find(
+        (product) => product.name === paymentProduct.size
+      );
+      // console.log(selectedSize, "selectedSize");
+      if(selectedSize){
+        selectedSize.quantity -= paymentProduct.quantity
+        console.log(
+          `Updated size: ${selectedSize.name}, New quantity: ${parseInt(selectedSize.quantity)}`
+        );
+      }
+
+      if(selectedSize.quantity < 0){
+        selectedSize.quantity = 0
+      }
+      console.log(existingProduct, "existingProduct")
+      await existingProduct.save()
+
+    }
     return res.status(200).send({
       success: true,
       message: "Purchase confirmed!",

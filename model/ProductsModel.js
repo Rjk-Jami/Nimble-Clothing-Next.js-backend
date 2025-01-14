@@ -39,14 +39,11 @@ const productSchema = new mongoose.Schema({
       type: String,
     },
   },
-  sizes: {
-    type: [String],
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
+  sizes: [{
+    name: { type: String, required: true },
+    quantity: { type: String, required: true },
+  }],
+  
   categories: {
     type: String,
     required: true,
