@@ -2,7 +2,7 @@ const { ProductsModal } = require("../../model/ProductsModel");
 const { PaymentModel } = require("../../model/PurchaseModel");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const YOUR_DOMAIN = process.env.FRONTEND_URL || "http://localhost:3000";
-const bdtToUsd = 0.0082;
+const bdtToUsd = process.env.BDT_TO_USD;
 
 const MakePayment = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ const MakePayment = async (req, res) => {
       currency: "usd",
       payment_method_types: ["card"],
     });
-    console.log(paymentIntent.client_secret, "paymentIntent");
+    // console.log(paymentIntent.client_secret, "paymentIntent");
     res
       .status(200)
       .json({ success: true, clientSecret: paymentIntent.client_secret });
@@ -48,7 +48,7 @@ const Purchase = async (req, res) => {
 
     const payment = await PaymentModel.create(paymentDetails);
 
-    console.log(payment, "payment");
+    // console.log(payment, "payment");
 
     //  payment?.product?.map((paymentProduct)=>{
     //   console.log(paymentProduct,"paymentProduct.product" )
@@ -65,15 +65,15 @@ const Purchase = async (req, res) => {
       // console.log(selectedSize, "selectedSize");
       if(selectedSize){
         selectedSize.quantity -= paymentProduct.quantity
-        console.log(
-          `Updated size: ${selectedSize.name}, New quantity: ${parseInt(selectedSize.quantity)}`
-        );
+        // console.log(
+        //   `Updated size: ${selectedSize.name}, New quantity: ${parseInt(selectedSize.quantity)}`
+        // );
       }
 
       if(selectedSize.quantity < 0){
         selectedSize.quantity = 0
       }
-      console.log(existingProduct, "existingProduct")
+      // console.log(existingProduct, "existingProduct")
       // await existingProduct.save()
 
     }

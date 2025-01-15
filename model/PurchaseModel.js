@@ -44,6 +44,18 @@ const paymentSchema = new mongoose.Schema({
     amount: { type: Number, },
     _id: {  type: String, },
   },
+  totalPrice:{
+    type:Number,
+    required:true
+  },
+  shippingCost:{
+    type:Number,
+    required:true
+  },
+  isPayed:{
+    type:Boolean
+  }
+
   
 },
 { timestamps: true }
