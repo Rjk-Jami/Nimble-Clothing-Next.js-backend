@@ -54,6 +54,22 @@ const paymentSchema = new mongoose.Schema({
   },
   isPayed:{
     type:Boolean
+  },
+  isOrderAccept:{
+    type:Boolean,
+    default: false
+  },
+  isOrderReceive:{
+    type:Boolean,
+    default: false
+  },
+  isReviewed:{
+    type:Boolean,
+    default: false
+  },
+  isCancel:{
+    type:Boolean,
+    default: false
   }
 
   
