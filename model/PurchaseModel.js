@@ -34,6 +34,7 @@ const paymentSchema = new mongoose.Schema({
       _id: { type: mongoose.Schema.Types.ObjectId, required: true },
       size: { type: String, required: true },
       quantity: { type: Number, required: true },
+      price: { type: Number, required: true },
     },
   ],
   paymentMethod: {
@@ -59,7 +60,7 @@ const paymentSchema = new mongoose.Schema({
     type:Boolean,
     default: false
   },
-  isOrderReceive:{
+  isOrderDelivered:{
     type:Boolean,
     default: false
   },
