@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/orderedProductsDetails",authMiddleWare, getOrderedProductsDetails)
 router.post("/orderedProducts",authMiddleWare, getOrderedProducts)
-router.get("/singleOrderedProducts/:id",authMiddleWare, getSingleOrderedProducts)
+router.get("/singleOrderedProducts/:id", getSingleOrderedProducts)
 
 module.exports = router;
