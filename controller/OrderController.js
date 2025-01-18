@@ -1,5 +1,15 @@
 const { ProductsModal } = require("../model/ProductsModel");
 const { PaymentModel } = require("../model/PurchaseModel");
+const getSingleOrderedProducts = async (req, res) =>{
+  try {
+    const id = req.params.id;
+    const order = await PaymentModel.findOne({_id: id})
+    console.log(order, "getSingleOrderedProducts")
+    res.status(200).send({success: true, order});
+} catch (error) {
+     next(error);
+}
+}
 
 const getOrderedProductsDetails = async (req, res) => {
   try {
@@ -71,4 +81,4 @@ const getOrderedProducts = async (req, res) => {
   }
 };
 
-module.exports = { getOrderedProductsDetails, getOrderedProducts };
+module.exports = { getOrderedProductsDetails, getOrderedProducts, getSingleOrderedProducts };
