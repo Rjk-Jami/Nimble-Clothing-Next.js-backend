@@ -44,14 +44,14 @@ app.use((error, req, res, next) => {
     await connectDatabase();
     console.log("Database connected");
 
-    if (process.env.NODE_ENV !== "production") {
+    
       app.listen(port, () => {
         console.log(`Server running on port ${port}`);
       });
-    }
+    
   } catch (error) {
     console.error("Failed to connect to the database", error);
-    // process.exit(1); // Exit the process with a failure code
+    process.exit(1); // Exit the process with a failure code
   }
 })();
 
