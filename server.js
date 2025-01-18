@@ -37,7 +37,7 @@ app.get("/check-cookies", (req, res) => {
 
   res.send(req.cookies);
 });
-
+app.get("/", (req, res) => res.send("Express on Vercel"));
 app.listen(port, async () => {
   await connectDatabase();
   console.log(`Example app listening on port ${port}`);
