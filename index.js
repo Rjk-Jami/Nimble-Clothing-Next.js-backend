@@ -29,11 +29,24 @@ app.get("/check-cookies", (req, res) => {
 });
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
-
+app.use((error, req, res, text) => {
+  const message = error.message ? error.message : "Server Error Occured";
+  const status = error.status ? error.status : 500;
+  res.status(status).json({ success: false, message });
+});
 // Connect to Database and Start Server
 (async () => {
-  await connectDatabase();
-  console.log("Database connected");
+  try {
+    await connectDatabase();
+    console.log("Database connected");
+
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to the database", error);
+    process.exit(1); // Exit the process with a failure code
+  }
 })();
 
 module.exports = app; // Export the app for Vercel
