@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const port = process.env.SERVER_PORT || 5000;
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://nimble-clothing-next-js-usy5.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
