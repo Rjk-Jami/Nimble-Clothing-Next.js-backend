@@ -11,7 +11,7 @@ const port = process.env.SERVER_PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin: "https://nimble-clothing-next-js-usy5.vercel.app",
+    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js-usy5.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
@@ -28,24 +28,30 @@ app.get("/check-cookies", (req, res) => {
   res.send(req.cookies);
 });
 
+// Fallback route for testing
 app.get("/", (req, res) => res.send("Express on Vercel"));
-app.use((error, req, res, text) => {
-  const message = error.message ? error.message : "Server Error Occured";
-  const status = error.status ? error.status : 500;
+
+// Error Handling Middleware
+app.use((error, req, res, next) => {
+  const message = error.message || "Server Error Occurred";
+  const status = error.status || 500;
   res.status(status).json({ success: false, message });
 });
-// Connect to Database and Start Server
+
+// Database Connection and Server Start
 (async () => {
   try {
     await connectDatabase();
     console.log("Database connected");
 
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+      });
+    }
   } catch (error) {
     console.error("Failed to connect to the database", error);
-    // process.exit(1); // Exit the process with a failure code
+    process.exit(1); // Exit the process with a failure code
   }
 })();
 
