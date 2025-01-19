@@ -8,31 +8,31 @@ const router = require("./route");
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
 
-// CORS Middleware
+// CORS Configuration
 app.use(
   cors({
-    origin: "https://nimble-clothing-next-js.vercel.app", // Frontend URL
-    credentials: true, // Allow cookies
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    origin: "https://nimble-clothing-next-js.vercel.app",  // Your frontend URL
+    credentials: true,  // Allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],  // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"],  // Allowed headers
   })
 );
 
-// Preflight handling for OPTIONS requests
+// Handle preflight requests (OPTIONS)
 app.options("*", cors({
-  origin: "https://nimble-clothing-next-js.vercel.app",
+  origin: "https://nimble-clothing-next-js.vercel.app",  // Frontend URL
   credentials: true,
 }));
 
 // Middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
-app.use(cookieParser());
+app.use(express.json({ limit: "10mb" }));  // Handle JSON body
+app.use(express.urlencoded({ limit: "10mb", extended: true }));  // Handle URL-encoded data
+app.use(cookieParser());  // Parse cookies
 
 // Routes
 app.use("/api/v1", router);
 
-// Debugging Route
+// Debugging Route to Check Cookies
 app.get("/show", (req, res) => {
   const data = {
     name: "Jami Khan",
@@ -45,7 +45,7 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 
 // Error Handling Middleware
 app.use((error, req, res, next) => {
-  console.error("Error occurred:", error.stack);
+  console.error("Error occurred:", error.stack); // Log error stack for debugging
   const message = error.message || "Server Error Occurred";
   const status = error.status || 500;
   res.status(status).json({ success: false, message });
@@ -54,9 +54,10 @@ app.use((error, req, res, next) => {
 // Database Connection and Server Start
 (async () => {
   try {
-    await connectDatabase();
+    await connectDatabase(); // Connect to the database
     console.log("Database connected successfully");
 
+    // Start the server
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
@@ -65,4 +66,5 @@ app.use((error, req, res, next) => {
   }
 })();
 
+// Export the app for serverless deployment
 module.exports = app;
