@@ -11,22 +11,25 @@ const port = process.env.SERVER_PORT || 5000;
 // CORS Configuration
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js.vercel.app", // Allow frontend URL
-    credentials: true, // Allow cookies
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
+    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// Preflight Handling
+app.options("*", cors());
+
 // Middleware
-app.use(express.json({ limit: "10mb" })); // Handle JSON body
-app.use(express.urlencoded({ limit: "10mb", extended: true })); // Handle URL-encoded data
-app.use(cookieParser()); // Parse cookies
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(cookieParser());
 
 // Routes
 app.use("/api/v1", router);
 
-// Debugging Route to Check Cookies
+// Debugging Route
 app.get("/show", (req, res) => {
   const data = {
     name: "Jami Khan",
@@ -39,16 +42,21 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 
 // Error Handling Middleware
 app.use((error, req, res, next) => {
-  console.error("Error occurred:", error.stack); // Log error stack for debugging
+  const isProduction = process.env.NODE_ENV === "production";
+  console.error("Error occurred:", error.stack);
   const message = error.message || "Server Error Occurred";
   const status = error.status || 500;
-  res.status(status).json({ success: false, message });
+  res.status(status).json({
+    success: false,
+    message,
+    ...(isProduction ? {} : { stack: error.stack }),
+  });
 });
 
 // Database Connection and Server Start
 (async () => {
   try {
-    await connectDatabase(); // Connect to the database
+    await connectDatabase();
     console.log("Database connected successfully");
 
     // Start the server
@@ -57,7 +65,7 @@ app.use((error, req, res, next) => {
     });
   } catch (error) {
     console.error("Failed to connect to the database", error);
-    // process.exit(1); // Exit the process with a failure code
+    process.exit(1); // Exit the process if DB connection fails
   }
 })();
 
