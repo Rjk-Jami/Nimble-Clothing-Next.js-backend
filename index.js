@@ -8,31 +8,36 @@ const router = require("./route");
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
 
-// Middleware process.env.FRONTEND_URL || 
+// CORS Configuration
 app.use(
   cors({
-    origin: "https://nimble-clothing-next-js.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js.vercel.app", // Allow frontend URL
+    credentials: true, // Allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
   })
 );
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
-app.use(cookieParser());
+
+// Middleware
+app.use(express.json({ limit: "10mb" })); // Handle JSON body
+app.use(express.urlencoded({ limit: "10mb", extended: true })); // Handle URL-encoded data
+app.use(cookieParser()); // Parse cookies
 
 // Routes
 app.use("/api/v1", router);
 
+// Debugging Route to Check Cookies
 app.get("/check-cookies", (req, res) => {
-  console.log(req.cookies);
-  res.send(req.cookies);
+  console.log("Cookies:", req.cookies); // Log cookies for debugging
+  res.json({ cookies: req.cookies });
 });
 
-// Fallback route for testing
+// Fallback Route
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
 // Error Handling Middleware
 app.use((error, req, res, next) => {
+  console.error("Error occurred:", error.stack); // Log error stack for debugging
   const message = error.message || "Server Error Occurred";
   const status = error.status || 500;
   res.status(status).json({ success: false, message });
@@ -41,18 +46,18 @@ app.use((error, req, res, next) => {
 // Database Connection and Server Start
 (async () => {
   try {
-    await connectDatabase();
-    console.log("Database connected");
+    await connectDatabase(); // Connect to the database
+    console.log("Database connected successfully");
 
-    
-      app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
-      });
-    
+    // Start the server
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
   } catch (error) {
     console.error("Failed to connect to the database", error);
     process.exit(1); // Exit the process with a failure code
   }
 })();
 
-module.exports = app; // Export the app for Vercel
+// Export the app for serverless deployment
+module.exports = app;
