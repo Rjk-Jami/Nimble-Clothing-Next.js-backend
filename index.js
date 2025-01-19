@@ -55,7 +55,7 @@ app.use((error, req, res, next) => {
     });
   } catch (error) {
     console.error("Failed to connect to the database", error);
-    process.exit(1); // Exit the process with a failure code
+    // process.exit(1); // Exit the process with a failure code
   }
 })();
 
