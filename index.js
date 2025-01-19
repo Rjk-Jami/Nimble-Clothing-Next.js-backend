@@ -10,7 +10,12 @@ const port = process.env.SERVER_PORT || 5000;
 
 // CORS Configuration
 app.use(
-  cors()
+  cors({
+    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js.vercel.app", // Allow frontend URL
+    credentials: true, // Allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
+  })
 );
 
 // Middleware
