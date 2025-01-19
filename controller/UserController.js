@@ -48,6 +48,7 @@ const register = async (req, res, next) => {
       email: user?.email,
       name: user?.name,
       avatar: user?.avatar,
+      isVerified:user?.isVerified
     };
     await redis.set(user._id, JSON.stringify(payload));
     sendToken(payload, 200, res, next);
@@ -153,6 +154,7 @@ const login = async (req, res, next) => {
       email: existingUser?.email,
       name: existingUser?.name,
       avatar: existingUser?.avatar,
+      isVerified:existingUser?.isVerified
     };
     await redis.set(payload._id, JSON.stringify(payload));
     sendToken(payload, 200, res, next);

@@ -10,19 +10,19 @@ const port = process.env.SERVER_PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,  // Your frontend URL
-  credentials: true,  // Allow cookies
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],  // Allowed HTTP methods
+  origin: process.env.FRONTEND_URL,  
+  credentials: true,  
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],  
   
 };
 
-// Apply CORS middleware globally for all routes
+
 app.use(cors(corsOptions));
 
-// Middleware
-app.use(express.json({ limit: "10mb" }));  // Handle JSON body
-app.use(express.urlencoded({ limit: "10mb", extended: true }));  // Handle URL-encoded data
-app.use(cookieParser());  // Parse cookies
+
+app.use(express.json({ limit: "10mb" }));  
+app.use(express.urlencoded({ limit: "10mb", extended: true })); 
+app.use(cookieParser()); 
 
 // Routes
 app.use("/api/v1", router);
@@ -40,7 +40,7 @@ app.get("/", (req, res) => res.send("Express on Vercel"));
 
 // Error Handling Middleware
 app.use((error, req, res, next) => {
-  console.error("Error occurred:", error.stack); // Log error stack for debugging
+  console.error("Error occurred:", error.stack);
   const message = error.message || "Server Error Occurred";
   const status = error.status || 500;
   res.status(status).json({ success: false, message });
@@ -49,10 +49,10 @@ app.use((error, req, res, next) => {
 // Database Connection and Server Start
 (async () => {
   try {
-    await connectDatabase(); // Connect to the database
+    await connectDatabase(); 
     console.log("Database connected successfully");
 
-    // Start the server
+
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
@@ -61,5 +61,4 @@ app.use((error, req, res, next) => {
   }
 })();
 
-// Export the app for serverless deployment
 module.exports = app;
