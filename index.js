@@ -9,20 +9,15 @@ const app = express();
 const port = process.env.SERVER_PORT || 5000;
 
 // CORS Configuration
-app.use(
-  cors({
-    origin: "https://nimble-clothing-next-js.vercel.app",  // Your frontend URL
-    credentials: true,  // Allow cookies
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],  // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"],  // Allowed headers
-  })
-);
+const corsOptions = {
+  origin: "https://nimble-clothing-next-js.vercel.app",  // Your frontend URL
+  credentials: true,  // Allow cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],  // Allowed HTTP methods
+  
+};
 
-// Handle preflight requests (OPTIONS)
-app.options("*", cors({
-  origin: "https://nimble-clothing-next-js.vercel.app",  // Frontend URL
-  credentials: true,
-}));
+// Apply CORS middleware globally for all routes
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(express.json({ limit: "10mb" }));  // Handle JSON body
