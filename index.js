@@ -8,10 +8,10 @@ const router = require("./route");
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
 
-// Middleware
+// Middleware process.env.FRONTEND_URL || 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://nimble-clothing-next-js.vercel.app",
+    origin: "https://nimble-clothing-next-js.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
