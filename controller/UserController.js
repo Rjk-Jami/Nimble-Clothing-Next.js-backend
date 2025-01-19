@@ -36,7 +36,7 @@ const register = async (req, res, next) => {
     });
     // console.log(token)
 
-    const resetLink = `https://nimble-clothing-next-js-usy5.vercel.app/reset-password/${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
     const body = ` <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Password Reset Request</title> </head> <body> <div style="background-color: #f3f3f3; padding: 20px;"> <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"> <h2 style="background-color: #6a1b9a; color: #ffffff; padding: 10px; border-radius: 8px 8px 0 0; margin: 0;">Password Reset Request</h2> <div style="padding: 20px;"> <p>Hi ${email},</p> <p>Someone has requested a new password for the following account on Volcano BD:</p> <p><strong>Username:</strong> ${email}</p> <p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p> <p><a href="${resetLink}" style="color: #6a1b9a; text-decoration: none;">Click here to reset your password</a></p> <p>Thanks for reading.</p> </div> </div> <p style="text-align: center; color: #888888; font-size: 12px;">Nimble ware — Built with <a href="http://localhost:3000/" style="color: #6a1b9a; text-decoration: none;">WooCommerce</a></p> </div> </body> </html> `;
 
