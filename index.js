@@ -27,9 +27,11 @@ app.use(cookieParser()); // Parse cookies
 app.use("/api/v1", router);
 
 // Debugging Route to Check Cookies
-app.get("/check-cookies", (req, res) => {
-  console.log("Cookies:", req.cookies); // Log cookies for debugging
-  res.json({ cookies: req.cookies });
+app.get("/show", (req, res) => {
+  const data = {
+    name: "Jami Khan",
+  };
+  res.send("Hii");
 });
 
 // Fallback Route
