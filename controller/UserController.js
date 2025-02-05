@@ -49,7 +49,7 @@ const register = async (req, res, next) => {
       name: user?.name,
       phone: user?.phone,
       avatar: user?.avatar,
-      isVerified:user?.isVerified
+      isVerified: user?.isVerified,
     };
     await redis.set(user._id, JSON.stringify(payload));
     sendToken(payload, 200, res, next);
@@ -96,7 +96,7 @@ const resetPassword = async (req, res, next) => {
       return res
         .status(400)
         .json({ success: false, message: "Token already used" });
-    } 
+    }
 
     const hashedPassword = await bcrypt.hash(resetPassword, 15);
     console.log(hashedPassword, "hashedPassword");
@@ -150,17 +150,86 @@ const login = async (req, res, next) => {
         .status(401)
         .send({ success: false, message: "Invalid password!" });
     }
-   console.log(existingUser, "login")
+    console.log(existingUser, "login");
     const payload = {
       _id: existingUser?._id,
       email: existingUser?.email,
       phone: existingUser?.phone,
       name: existingUser?.name,
       avatar: existingUser?.avatar,
-      isVerified:existingUser?.isVerified
+      isVerified: existingUser?.isVerified,
     };
     await redis.set(payload._id, JSON.stringify(payload));
     sendToken(payload, 200, res, next);
   } catch (error) {}
 };
-module.exports = { register, logout, resetPassword, login };
+
+
+const updateUser = async (req, res, next) => {
+  try {
+    const { userDetails } = req.body;
+    console.log(userDetails, "userDetails");
+
+    const validUser = req.user;
+    console.log(validUser, "validUser");
+
+    const existingUser = await UserModel.findById(validUser._id);
+    if (!existingUser) {
+      return res.status(404).json({ success: false, message: "User not found!" });
+    }
+
+    console.log(existingUser, "existingUser");
+
+    // If no old password is provided, update only name and phone
+    if (!userDetails.oldPassword) {
+      console.log("Updating name and phone only...");
+      existingUser.name = userDetails?.myName || existingUser.name;
+      existingUser.phone = userDetails?.myPhone || existingUser.phone;
+      await existingUser.save();
+    } else {
+      // If old password is provided, new password and confirm password must also be provided
+      if (!userDetails.newPassword || !userDetails.confirmPassword) {
+        return res.status(400).json({ success: false, message: "New and confirm passwords are required!" });
+      }
+
+      // Verify old password
+      const isPasswordCorrect = await bcrypt.compare(userDetails.oldPassword, existingUser.password);
+      console.log(isPasswordCorrect, "isPasswordCorrect");
+
+      if (!isPasswordCorrect) {
+        return res.status(401).json({ success: false, message: "Invalid old password!" });
+      }
+
+      
+
+      // Hash and update password
+      const hashedPassword = await bcrypt.hash(userDetails.newPassword, 15);
+      console.log(hashedPassword, "hashedPassword");
+
+      existingUser.password = hashedPassword;
+      await existingUser.save();
+    }
+
+    // Prepare updated user payload
+    const payload = {
+      _id: existingUser._id,
+      email: existingUser.email,
+      phone: existingUser.phone,
+      name: existingUser.name,
+      avatar: existingUser.avatar,
+      isVerified: existingUser.isVerified,
+    };
+
+    // Store updated user info in Redis cache
+    await redis.set(payload._id, JSON.stringify(payload));
+
+    // Send updated user details with a new token
+    return res.status(200).send({ success: true, user:payload});
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+module.exports = { register, logout, resetPassword, login, updateUser };
