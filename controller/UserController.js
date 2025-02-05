@@ -151,6 +151,7 @@ const login = async (req, res, next) => {
         .send({ success: false, message: "Invalid password!" });
     }
     console.log(existingUser, "login");
+    
     const payload = {
       _id: existingUser?._id,
       email: existingUser?.email,
@@ -175,7 +176,9 @@ const updateUser = async (req, res, next) => {
 
     const existingUser = await UserModel.findById(validUser._id);
     if (!existingUser) {
-      return res.status(404).json({ success: false, message: "User not found!" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found!" });
     }
 
     console.log(existingUser, "existingUser");
@@ -189,18 +192,30 @@ const updateUser = async (req, res, next) => {
     } else {
       // If old password is provided, new password and confirm password must also be provided
       if (!userDetails.newPassword || !userDetails.confirmPassword) {
-        return res.status(400).json({ success: false, message: "New and confirm passwords are required!" });
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "New and confirm passwords are required!",
+          });
       }
 
       // Verify old password
-      const isPasswordCorrect = await bcrypt.compare(userDetails.oldPassword, existingUser.password);
+      const isPasswordCorrect = await bcrypt.compare(
+        userDetails.oldPassword,
+        existingUser.password
+      );
       console.log(isPasswordCorrect, "isPasswordCorrect");
 
       if (!isPasswordCorrect) {
-        return res.status(401).json({ success: false, message: "Invalid old password!" });
+        return res
+          .status(401)
+          .json({
+            success: false,
+            isValid: false,
+            message: "Invalid old password!",
+          });
       }
-
-      
 
       // Hash and update password
       const hashedPassword = await bcrypt.hash(userDetails.newPassword, 15);
@@ -224,12 +239,16 @@ const updateUser = async (req, res, next) => {
     await redis.set(payload._id, JSON.stringify(payload));
 
     // Send updated user details with a new token
-    return res.status(200).send({ success: true, user:payload});
-
+    return res
+      .status(200)
+      .send({
+        success: true,
+        user: payload,
+        message: "User details updated successfully!",
+      });
   } catch (error) {
     next(error);
   }
 };
-
 
 module.exports = { register, logout, resetPassword, login, updateUser };
