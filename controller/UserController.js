@@ -164,7 +164,7 @@ const login = async (req, res, next) => {
   } catch (error) {}
 };
 
-
+// update user details
 const updateUser = async (req, res, next) => {
   try {
     const { userDetails } = req.body;
