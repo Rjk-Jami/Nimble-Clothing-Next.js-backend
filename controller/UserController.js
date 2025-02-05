@@ -47,6 +47,7 @@ const register = async (req, res, next) => {
       _id: user?._id,
       email: user?.email,
       name: user?.name,
+      phone: user?.phone,
       avatar: user?.avatar,
       isVerified:user?.isVerified
     };
@@ -149,9 +150,11 @@ const login = async (req, res, next) => {
         .status(401)
         .send({ success: false, message: "Invalid password!" });
     }
+   console.log(existingUser, "login")
     const payload = {
       _id: existingUser?._id,
       email: existingUser?.email,
+      phone: existingUser?.phone,
       name: existingUser?.name,
       avatar: existingUser?.avatar,
       isVerified:existingUser?.isVerified

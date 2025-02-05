@@ -8,6 +8,7 @@ const refreshToken = async (req, res, next) => {
       _id: validUser?._id,
       email: validUser?.email,
       name: validUser?.name,
+      phone: validUser?.phone,
       avatar: validUser?.avatar,
     };
     // console.log(payload, "payload refreshToken ")
