@@ -38,9 +38,7 @@ const register = async (req, res, next) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
-    const body = ` <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Password Reset Request</title> </head> <body> <div style="background-color: #f3f3f3; padding: 20px;"> <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"> <h2 style="background-color: #6a1b9a; color: #ffffff; padding: 10px; border-radius: 8px 8px 0 0; margin: 0;">Password Reset Request</h2> <div style="padding: 20px;"> <p>Hi ${email},</p> <p>Someone has requested a new password for the following account on Volcano BD:</p> <p><strong>Username:</strong> ${email}</p> <p>If you didn't make this request, just ignore this email. If you'd like to proceed:</p> <p><a href="${resetLink}" style="color: #6a1b9a; text-decoration: none;">Click here to reset your password</a></p> <p>Thanks for reading.</p> </div> </div> <p style="text-align: center; color: #888888; font-size: 12px;">Nimble ware — Built with <a href="http://localhost:3000/" style="color: #6a1b9a; text-decoration: none;">WooCommerce</a></p> </div> </body> </html> `;
-
-    await sendMail(email, "Set Your Password", body);
+    await sendMail(email, "Set Your Password", resetLink);
 
     console.log(user, "user");
     const payload = {
@@ -92,17 +90,13 @@ const resetPassword = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-    if (user.passwordTokenUsed) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Token already used" });
-    }
+   
 
     const hashedPassword = await bcrypt.hash(resetPassword, 15);
     console.log(hashedPassword, "hashedPassword");
 
     user.password = hashedPassword;
-    user.passwordTokenUsed = true;
+    
     user.isVerified = true;
 
     await user.save();
@@ -151,7 +145,7 @@ const login = async (req, res, next) => {
         .send({ success: false, message: "Invalid password!" });
     }
     console.log(existingUser, "login");
-    
+
     const payload = {
       _id: existingUser?._id,
       email: existingUser?.email,
@@ -180,6 +174,13 @@ const updateUser = async (req, res, next) => {
         .status(404)
         .json({ success: false, message: "User not found!" });
     }
+    if (existingUser?.isVerified === false) {
+      return res.status(404).json({
+        success: false,
+        isVerified: false,
+        message: "Please go for reset password",
+      });
+    }
 
     console.log(existingUser, "existingUser");
 
@@ -192,12 +193,10 @@ const updateUser = async (req, res, next) => {
     } else {
       // If old password is provided, new password and confirm password must also be provided
       if (!userDetails.newPassword || !userDetails.confirmPassword) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "New and confirm passwords are required!",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "New and confirm passwords are required!",
+        });
       }
 
       // Verify old password
@@ -208,13 +207,11 @@ const updateUser = async (req, res, next) => {
       console.log(isPasswordCorrect, "isPasswordCorrect");
 
       if (!isPasswordCorrect) {
-        return res
-          .status(401)
-          .json({
-            success: false,
-            isValid: false,
-            message: "Invalid old password!",
-          });
+        return res.status(401).json({
+          success: false,
+          isValid: false,
+          message: "Invalid old password!",
+        });
       }
 
       // Hash and update password
@@ -239,16 +236,50 @@ const updateUser = async (req, res, next) => {
     await redis.set(payload._id, JSON.stringify(payload));
 
     // Send updated user details with a new token
-    return res
-      .status(200)
-      .send({
-        success: true,
-        user: payload,
-        message: "User details updated successfully!",
-      });
+    return res.status(200).send({
+      success: true,
+      user: payload,
+      message: "User details updated successfully!",
+    });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { register, logout, resetPassword, login, updateUser };
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res
+      .status(400)
+      .send({ success: false, message: "email is required" });
+  }
+  const existingUser = await UserModel.findOne({ email });
+  const payloadForToken = {
+    _id: existingUser?._id,
+  };
+  if (!existingUser) {
+    return res.status(400).send({ success: false, message: "User not found!" });
+  }
+  const token = jwt.sign(payloadForToken, process.env.JWT_SECRET_SETPASS, {
+    expiresIn: "1h",
+  });
+  // console.log(token)
+
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+
+  await sendMail(email, "Set Your Password", resetLink);
+  console.log(email, "email");
+  return res
+    .status(200)
+    .send({ success: true, message: "Password reset link sent to email" });
+};
+
+module.exports = {
+  register,
+  logout,
+  resetPassword,
+  login,
+  updateUser,
+  forgotPassword,
+};
