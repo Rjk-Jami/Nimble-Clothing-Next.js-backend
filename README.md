@@ -51,6 +51,7 @@ SMTP_PASSWORD=smtp-password
 SMTP_Gmail=author-gmail
 STRIPE_SECRET_KEY=your-stripe-secret-key
 BDT_TO_USD=amount
-FRONTEND_URL=your-frontendURL("http://localhost:3000")
+FRONTEND_URL="your-frontendURL -http://localhost:3000"
+
 # Run the development server
 npm start
