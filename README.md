@@ -1,6 +1,6 @@
 # Backend for Nimble Wear
 
-This is the backend server for **[Nimble Wear](https://nimble-clothing-next-js.vercel.app)**, an e-commerce platform that supports functionalities like user authentication, order management, payment integration, and more. The backend is built with **Node.js**, **Express**, and connects to a **MongoDB** database.
+This is the backend server for **[Nimble Wear](https://nimble-wear.vercel.app)**, an e-commerce platform that supports functionalities like user authentication, order management, payment integration, and more. The backend is built with **Node.js**, **Express**, and connects to a **MongoDB** database.
 
 ## 🛠️ Technologies & Packages Used
 
