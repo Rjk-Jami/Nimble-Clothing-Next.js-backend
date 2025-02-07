@@ -39,19 +39,19 @@ cd nimble-wear-backend
 npm install
 
 # Create a .env file in the root of your project
-SERVER_PORT=your-SERVER_PORT
-SERVER_Database=your-mongodb-connection-string
-JWT_SECRET_ACCESS=your-jwt-secret
-JWT_SECRET_REFRESH=your-jwt-secret
-JWT_SECRET_SETPASS=your-jwt-secret
-ACCESS_TOKEN_EXPIRES_IN=minute
-REFRESH_TOKEN_EXPIRES_IN=day
-SMTP_USER=smtp-user-name
-SMTP_PASSWORD=smtp-password
-SMTP_Gmail=author-gmail
-STRIPE_SECRET_KEY=your-stripe-secret-key
-BDT_TO_USD=amount
-FRONTEND_URL="your-frontendURL -http://localhost:3000"
+- **SERVER_PORT** = "your-SERVER_PORT"
+- **SERVER_Database** = "your-mongodb-connection-string"
+- **JWT_SECRET_ACCESS** = "your-jwt-secret"
+- **JWT_SECRET_REFRESH** = "your-jwt-secret"
+- **JWT_SECRET_SETPASS** = "your-jwt-secret"
+- **ACCESS_TOKEN_EXPIRES_IN** = "minute"
+- **REFRESH_TOKEN_EXPIRES_IN** = "day"
+- **SMTP_USER** = "smtp-user-name"
+- **SMTP_PASSWORD** = "smtp-password"
+- **SMTP_Gmail** = "author-gmail"
+- **STRIPE_SECRET_KEY** = "your-stripe-secret-key"
+- **BDT_TO_USD** = "amount"
+- **FRONTEND_URL** = "your-frontendURL = http://localhost:3000"
 
 # Run the development server
 npm start
