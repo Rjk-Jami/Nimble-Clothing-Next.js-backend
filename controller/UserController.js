@@ -2,7 +2,7 @@ const { UserModel } = require("../model/UsersModel");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendmail");
 const sendToken = require("../utils/sendToken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { redis } = require("../Database/ConnectRedis");
 const register = async (req, res, next) => {
   const { emailForRegister: email } = req.body;
