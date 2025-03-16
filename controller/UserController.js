@@ -26,7 +26,10 @@ const register = async (req, res, next) => {
     const newUserRequest = await UserModel({
       email,
       name: email.split("@")[0],
+      // testing purpose
       password: hashedPassword,
+      isVerified: true,
+      //  testing purpose
     });
     await newUserRequest.save();
     const user = await UserModel.findOne({ email });
