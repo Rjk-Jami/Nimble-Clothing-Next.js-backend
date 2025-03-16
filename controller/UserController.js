@@ -21,9 +21,12 @@ const register = async (req, res, next) => {
         .status(400)
         .send({ success: false, message: "User already exists" });
     }
+    const hashedPassword = await bcrypt.hash(email, 15);
+
     const newUserRequest = await UserModel({
       email,
       name: email.split("@")[0],
+      password: hashedPassword,
     });
     await newUserRequest.save();
     const user = await UserModel.findOne({ email });
@@ -38,7 +41,8 @@ const register = async (req, res, next) => {
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
-    await sendMail(email, "Set Your Password", resetLink);
+    // for dev
+    // await sendMail(email, "Set Your Password", resetLink);
 
     console.log(user, "user");
     const payload = {
@@ -90,13 +94,11 @@ const resetPassword = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-   
-
     const hashedPassword = await bcrypt.hash(resetPassword, 15);
     console.log(hashedPassword, "hashedPassword");
 
     user.password = hashedPassword;
-    
+
     user.isVerified = true;
 
     await user.save();
