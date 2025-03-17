@@ -18,7 +18,7 @@ const register = async (req, res, next) => {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res
-        .status(400)
+        .status(409)
         .send({ success: false, message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(email, 15);
@@ -57,7 +57,7 @@ const register = async (req, res, next) => {
       isVerified: user?.isVerified,
     };
     await redis.set(user._id, JSON.stringify(payload));
-    sendToken(payload, 200, res, next);
+    sendToken(payload, 201, res, next);
   } catch (error) {
     next(error);
   }
@@ -131,7 +131,7 @@ const login = async (req, res, next) => {
     const existingUser = await UserModel.findOne({ email });
     if (!existingUser) {
       return res
-        .status(400)
+        .status(404)
         .send({ success: false, message: "User not found!" });
     }
     if (!existingUser.isVerified) {
