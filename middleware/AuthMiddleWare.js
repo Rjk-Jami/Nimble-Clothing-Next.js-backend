@@ -7,7 +7,7 @@ const authMiddleWare = async (req, res, next) => {
     // console.log(token, "token");
     if (!token) {
       return res
-        .status(400)
+        .status(401)
         .send({ success: false, message: "Unauthorized Access" });
     }
     // console.log(token, "token authMiddleWare");
@@ -34,8 +34,8 @@ const authMiddleWare = async (req, res, next) => {
     // console.log(validUser, "validUser authMiddleWare");
     if (!validUser) {
       return res
-        .status(400)
-        .send({ success: false, message: "could not refresh token" });
+        .status(401)
+        .send({ success: false, message: "Unauthorized Access: Invalid user" });
     }
     req.user = validUser;
     next();
