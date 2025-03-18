@@ -65,6 +65,9 @@ const register = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
+    if(!req.body.user._id){
+     return res.status(404).send({ success: false, message: "user is not found" });
+    }
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     console.log(req.cookies, "logout");

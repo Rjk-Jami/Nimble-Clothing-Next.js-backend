@@ -8,7 +8,7 @@ const authMiddleWare = async (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .send({ success: false, message: "Unauthorized Access" });
+        .send({ success: false, message: "Unauthorized Access : No token" });
     }
     // console.log(token, "token authMiddleWare");
 
