@@ -34,10 +34,15 @@ const viewProductById = async (req, res, next) => {
     const id = req.params.id;
     const product = await ProductsModal.findOne({ _id: id });
     // console.log(product)
+    if (!product) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Product not found" });
+    }
     res.status(200).send({ success: true, product });
   } catch (error) {
     next(error);
   }
 };
-
+ 
 module.exports = { uploadProduct, viewAllProduct, viewProductById , inventoryHealthCheck };
