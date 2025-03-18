@@ -1,5 +1,5 @@
 const express = require('express');
-const { uploadProduct, viewAllProduct, viewProductById } = require('../../controller/ProductsColtroller');
+const { uploadProduct, viewAllProduct, viewProductById, inventoryHealthCheck } = require('../../controller/ProductsColtroller');
 const { compareProducts } = require('../../components/CompareProducts/CompareProducts');
 
 const router = express.Router();
@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.post('/create', uploadProduct);
 router.get('/', viewAllProduct);
+router.get('/health', inventoryHealthCheck);
 router.get('/:id', viewProductById);
 router.post('/compare/selectedProduct', compareProducts)
 router.post('/wishList/selectedProduct', compareProducts)
