@@ -65,17 +65,21 @@ const register = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    if(!req.body.user._id){
-     return res.status(404).send({ success: false, message: "user _id is not found" });
+    if (!req.body.user._id) {
+      return res
+        .status(404)
+        .send({ success: false, message: "user _id is not found" });
     }
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     console.log(req.cookies, "logout");
     console.log(req.body.user._id, "logout");
     const result = await redis.del(`"${req.body.user._id}"`);
-    if(!result){
-      return res.status(404).send({ success: false, message: "user is not found" });
-     }
+    if (!result) {
+      return res
+        .status(404)
+        .send({ success: false, message: "user is not found" });
+    }
     res.status(200).send({ success: true, message: "Logged out" });
   } catch (error) {
     next(error);
@@ -87,13 +91,31 @@ const resetPassword = async (req, res, next) => {
   const { token } = req.params;
 
   console.log(resetPassword, "resetPassword");
+ 
+  if (!resetPassword) {
+    return res
+      .status(404)
+      .json({ success: false, message: "new password not found" });
+  }
+  if (resetPassword.length < 6) {
+    return res
+      .status(400)
+      .json({ success: false, message: "new password must be 6 or more" });
+  }
+
   console.log(token, "token");
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_SETPASS);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET_SETPASS);
+    } catch (error) {
+      return res
+        .status(404)
+        .json({ success: false, message: "token not valid" });
+    }
 
     console.log(decoded._id, "decoded");
-
     const user = await UserModel.findOne({ _id: decoded._id });
     console.log(user, "user");
 
@@ -281,9 +303,11 @@ const forgotPassword = async (req, res) => {
 
   await sendMail(email, "Set Your Password", resetLink);
   console.log(email, "email");
-  return res
-    .status(200)
-    .send({ success: true, message: "Password reset link sent to email", token });
+  return res.status(200).send({
+    success: true,
+    message: "Password reset link sent to email",
+    token,
+  });
 };
 
 module.exports = {
