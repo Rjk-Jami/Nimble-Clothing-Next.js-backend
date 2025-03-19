@@ -66,13 +66,16 @@ const register = async (req, res, next) => {
 const logout = async (req, res, next) => {
   try {
     if(!req.body.user._id){
-     return res.status(404).send({ success: false, message: "user is not found" });
+     return res.status(404).send({ success: false, message: "user _id is not found" });
     }
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     console.log(req.cookies, "logout");
     console.log(req.body.user._id, "logout");
-    await redis.del(`"${req.body.user._id}"`);
+    const result = await redis.del(`"${req.body.user._id}"`);
+    if(!result){
+      return res.status(404).send({ success: false, message: "user is not found" });
+     }
     res.status(200).send({ success: true, message: "Logged out" });
   } catch (error) {
     next(error);
@@ -280,7 +283,7 @@ const forgotPassword = async (req, res) => {
   console.log(email, "email");
   return res
     .status(200)
-    .send({ success: true, message: "Password reset link sent to email" });
+    .send({ success: true, message: "Password reset link sent to email", token });
 };
 
 module.exports = {
